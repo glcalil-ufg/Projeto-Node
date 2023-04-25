@@ -1,22 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectKnex, Knex } from 'nestjs-knex';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
+  constructor(
+    @InjectKnex() private readonly knex: Knex,
+  ) {}
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(): Promise <User[] | null> {
+    return await this.knex<User>('users').select();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise <User[]> {
+    return await this.knex<User>('users').select('id', 'nome', 'login').where('id','=',id);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: number, updateUserDto: UpdateUserDto): string {
     return `This action updates a #${id} user`;
   }
 
